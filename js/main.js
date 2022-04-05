@@ -5,6 +5,7 @@ document.getElementById('issueInputForm').addEventListener('submit', saveIssue)
 function fetchIssues(){
     let issues = JSON.parse(localStorage.getItem('issues'))
     let issuesList = document.getElementById('issuesList')
+    
 
     issuesList.innerHTML = '';
 
@@ -17,17 +18,28 @@ function fetchIssues(){
         let status = issues[i].status
         let statusColor = status == 'Closed'? 'label-success' : 'label-info'
 
-        //issuesList.innerHTML += 
+        issuesList.innerHTML += 
+        "<div class='well'>" +
+        "<h6> Issue ID:" + id + "</h6>" +
+        '<p><span class= "label ' + statusColor + '">' + status + '</span></p>' + 
+        '<h3>' + subject + '</h3>' + 
+        '<p>' + description + '</p>' +
+        '<p>' + severity+ '</p>' +
+        '<p><span class="glyphicon glyphicon-time"></span> ' + severity + ' ' + '<span class="glyphicon glyphicon-user"></span>' + assignedTo + '</p>' +
+        '<a href="#" class="btn btn-warning" onclick="setStatusClosed(\''+id+'\')">Close</a> ' +
+        '<a href="#" class="btn btn-danger" onclick="deleteIssue(\''+id+'\')">Delete</a> '
+        + '</div>'
+        
     }
 }
 
 
 function saveIssue(e){
     let issueId = chance.guid()
-    let issueSubject = document.getElementById('issueSubjInput')
-    let issueDescription = document.getElementById('issueDesInput')
-    let issueSeverity = document.getElementById('issueSeverityInput')
-    let issueAssignedTo = document.getElementById('issueAssignedInput')
+    let issueSubject = document.getElementById('issueSubjInput').value
+    let issueDescription = document.getElementById('issueDesInput').value
+    let issueSeverity = document.getElementById('issueSeverityInput').value
+    let issueAssignedTo = document.getElementById('issueAssignedInput').value
     let issueStatus = 'Open'
 
 
@@ -40,9 +52,10 @@ function saveIssue(e){
         assignedTo: issueAssignedTo,
         status: issueStatus
     }
+    console.log(issue)
 
     // checking if item is in storage, so it will be stored and saved in local storage 
-    if( localStorage.getItem('issues' === null)){
+    if( localStorage.getItem('issues') === null){
        let issues = []
        issues.push(issue)
        localStorage.setItem('issues', JSON.stringify(issues))
@@ -52,7 +65,7 @@ function saveIssue(e){
         localStorage.setItem('issues', JSON.stringify(issues))
     }
 
-    document.getElementById('issueInputForm').reset()
+    document.getElementById('issueInputForm').reset();
 
 
     fetchIssues()
@@ -60,3 +73,13 @@ function saveIssue(e){
     e.preventDefault()
 }
 
+function setStatusClosed(id){
+    let issues = JSON.parse(localStorage.getItem('issues'))
+    for(let i = 0; i < issues.length; i++){
+        if(issues[i].id === id ){
+            issues[i].status = 'Closed'
+        }
+    }
+    localStorage.setItem( "issues", JSON.stringify(issues))
+    fetchIssues()
+}

@@ -83,3 +83,14 @@ function setStatusClosed(id){
     localStorage.setItem( "issues", JSON.stringify(issues))
     fetchIssues()
 }
+
+function deleteIssue(id){
+    let issues = JSON.parse(localStorage.getItem('issues'))
+    for(let i = 0; i < issues.length; i++){
+        if(issues[i].id === id){
+            issues.splice(i, 1)
+        }
+    }
+    localStorage.setItem( "issues", JSON.stringify(issues))
+    fetchIssues()
+}
